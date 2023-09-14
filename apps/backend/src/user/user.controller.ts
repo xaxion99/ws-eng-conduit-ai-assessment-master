@@ -18,6 +18,16 @@ export class UserController {
     return this.userService.findByEmail(email);
   }
 
+  @Get('users')
+  async findAll(): Promise<IUserRO[]> {
+    const users = await this.userService.findAll();
+    
+    return users.map(user => {
+      const { email, username, bio, image } = user;
+      return { user: { email, username, bio, image } };
+    });
+  }
+
   @Put('user')
   async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
     return this.userService.update(userId, userData);

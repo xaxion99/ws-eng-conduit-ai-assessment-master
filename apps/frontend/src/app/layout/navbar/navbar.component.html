@@ -1,12 +1,17 @@
 <nav class="navbar navbar-light">
   <div class="container">
     <a class="navbar-brand" routerLink="/">conduit</a>
+
     <!-- Logged out user -->
     <ul *ngIf="!isLoggedIn" class="nav navbar-nav pull-xs-right">
       <li class="nav-item">
-        <!-- Add "active" class when you're on that page" -->
         <a class="nav-link" routerLink="/">Home</a>
       </li>
+      <!-- Roster link for logged out users -->
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/roster" routerLinkActive="active">Roster</a>
+      </li>
+      <!-- End Modification -->
       <li class="nav-item">
         <a class="nav-link" routerLink="/login" routerLinkActive="active">Sign in</a>
       </li>
@@ -18,15 +23,13 @@
     <!-- Logged in user -->
     <ul *ngIf="isLoggedIn" class="nav navbar-nav pull-xs-right">
       <li class="nav-item">
-        <!-- Add "active" class when you're on that page" -->
-        <a
-          class="nav-link active"
-          [routerLink]="['/']"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          >Home</a
-        >
+        <a class="nav-link active" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       </li>
+      <!-- Roster link for logged in users -->
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/roster']" routerLinkActive="active">Roster</a>
+      </li>
+      <!-- End Modification -->
       <li class="nav-item">
         <a class="nav-link" routerLink="/editor" routerLinkActive="active">
           <i class="ion-compose"></i>&nbsp;New Post
@@ -38,12 +41,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a
-          data-e2e-id="logedin-user"
-          class="nav-link"
-          [routerLink]="['/profile', user.username]"
-          routerLinkActive="active"
-        >
+        <a data-e2e-id="logedin-user" class="nav-link" [routerLink]="['/profile', user.username]" routerLinkActive="active">
           <img [src]="user.image" *ngIf="user.image" class="user-pic" />
           {{ user.username }}
         </a>

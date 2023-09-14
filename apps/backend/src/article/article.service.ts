@@ -8,6 +8,8 @@ import { Article } from './article.entity';
 import { IArticleRO, IArticlesRO, ICommentsRO } from './article.interface';
 import { Comment } from './comment.entity';
 import { CreateArticleDto, CreateCommentDto } from './dto';
+import { Tag } from '../tag/tag.entity';
+import { TagService } from '../tag/tag.service';
 
 @Injectable()
 export class ArticleService {
@@ -19,6 +21,7 @@ export class ArticleService {
     private readonly commentRepository: EntityRepository<Comment>,
     @InjectRepository(User)
     private readonly userRepository: EntityRepository<User>,
+    private readonly tagService: TagService, // Injected the TagService
   ) {}
 
   async findAll(userId: number, query: Record<string, string>): Promise<IArticlesRO> {
@@ -154,7 +157,17 @@ export class ArticleService {
       { populate: ['followers', 'favorites', 'articles'] },
     );
     const article = new Article(user!, dto.title, dto.description, dto.body);
-    article.tagList.push(...dto.tagList);
+    // article.tagList.push(...dto.tagList); // This line was ultimately replaced with the section below
+    // Added code to access TagService method findOrCreate to add the tags to the database
+    const tagInstances = [];
+    for (const tagName of dto.tagList) {
+      const tag = await this.tagService.findOrCreate(tagName);
+      tagInstances.push(tag);
+    }
+    const tagNames = tagInstances.map(tag => tag.tag);
+    article.tagList.push(...tagNames);
+    // End Modification
+
     user?.articles.add(article);
     await this.em.flush();
 
